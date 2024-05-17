@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Project Management Dashboard</h1>
+        <div class="form-container">
+            <input type="text" id="projectName" placeholder="Project Name">
+            <button id="createProject">Create Project</button>
+        </div>
+        <div id="projects">
+            <h2>All Projects</h2>
+            <p>tap on project to delete</p>
+            <ul id="projectList"></ul>
+        </div>
+        <div id="projectDetail" class="hidden">
+            <h2>Project Detail</h2>
+            
+            <p id="projectDetailName"></p>
+            <button id="deleteProject">Delete Project</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createProjectBtn = document.getElementById('createProject');
+    const projectNameInput = document.getElementById('projectName');
+    const projectList = document.getElementById('projectList');
+    const projectDetail = document.getElementById('projectDetail');
+    const projectDetailName = document.getElementById('projectDetailName');
+    const deleteProjectBtn = document.getElementById('deleteProject');
+
+    let projects = [];
+    let currentProject = null;
+
+    createProjectBtn.addEventListener('click', () => {
+        const projectName = projectNameInput.value.trim();
+        if (projectName) {
+            const projectId = Date.now();
+            projects.push({ id: projectId, name: projectName });
+            projectNameInput.value = '';
+            renderProjects();
+        }
+    });
+
+    function renderProjects() {
+        projectList.innerHTML = '';
+        projects.forEach(project => {
+            const li = document.createElement('li');
+            li.textContent = project.name;
+            li.dataset.id = project.id;
+            li.addEventListener('click', () => viewProject(project.id));
+            projectList.appendChild(li);
+        });
+    }
+
+    function viewProject(id) {
+        currentProject = projects.find(project => project.id === id);
+        if (currentProject) {
+            projectDetailName.textContent = currentProject.name;
+            projectDetail.classList.remove('hidden');
+        }
+    }
+
+    deleteProjectBtn.addEventListener('click', () => {
+        projects = projects.filter(project => project.id !== currentProject.id);
+        currentProject = null;
+        projectDetail.classList.add('hidden');
+        renderProjects();
+    });
+
+    renderProjects();
+});
+
+
+
+</script>
